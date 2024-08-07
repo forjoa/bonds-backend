@@ -2,8 +2,7 @@ import express from 'express';
 import { createServer } from 'http';
 import { Server } from 'socket.io';
 import bodyParser from 'body-parser';
-import userRoutes from './routes/userRoutes.js';
-import './config/database.js';
+import userRoute from './routes/userRoute.js';
 import { config } from 'dotenv';
 
 config();
@@ -14,7 +13,7 @@ const hostname = process.env.HOSTNAME || 'localhost';
 
 app.use(bodyParser.json());
 
-app.use('/api/users', userRoutes);
+app.use('/api/users', userRoute);
 
 const httpServer = createServer(app);
 const io = new Server(httpServer, {

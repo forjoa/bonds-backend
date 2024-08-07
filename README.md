@@ -1,3 +1,123 @@
 # Bonds backend
 
 Backend for Bonds
+
+## Database structure
+
+```sql
+CREATE TABLE users (
+  userId SERIAL PRIMARY KEY,
+  username VARCHAR(50) NOT NULL UNIQUE,
+  email VARCHAR(100) NOT NULL UNIQUE,
+  password VARCHAR(255) NOT NULL,
+  firstName VARCHAR(50),
+  lastName VARCHAR(50),
+  profilePhotoId INTEGER,
+  bio TEXT,
+  createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  updatedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE photos (
+  photoId SERIAL PRIMARY KEY,
+  userId INTEGER REFERENCES users(userId),
+  url TEXT NOT NULL,
+  createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE posts (
+  postId SERIAL PRIMARY KEY,
+  userId INTEGER REFERENCES users(userId),
+  content TEXT,
+  createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  updatedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE comments (
+  commentId SERIAL PRIMARY KEY,
+  postId INTEGER REFERENCES posts(postId),
+  userId INTEGER REFERENCES users(userId),
+  content TEXT,
+  createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  updatedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE likes (
+  likeId SERIAL PRIMARY KEY,
+  userId INTEGER REFERENCES users(userId),
+  postId INTEGER REFERENCES posts(postId),
+  createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE friendships (
+  friendshipId SERIAL PRIMARY KEY,
+  userId INTEGER REFERENCES users(userId),
+  friendUserId INTEGER REFERENCES users(userId),
+  status VARCHAR(20),
+  createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  updatedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE messages (
+  messageId SERIAL PRIMARY KEY,
+  senderId INTEGER REFERENCES users(userId),
+  receiverId INTEGER REFERENCES users(userId),
+  content TEXT,
+  createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  updatedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE notifications (
+  notificationId SERIAL PRIMARY KEY,
+  userId INTEGER REFERENCES users(userId),
+  type VARCHAR(50),
+  message TEXT,
+  isRead BOOLEAN DEFAULT FALSE,
+  createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE groups (
+  groupId SERIAL PRIMARY KEY,
+  name VARCHAR(100),
+  description TEXT,
+  createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  updatedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE groupMembers (
+  groupMemberId SERIAL PRIMARY KEY,
+  groupId INTEGER REFERENCES groups(groupId),
+  userId INTEGER REFERENCES users(userId),
+  role VARCHAR(50),
+  joinedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE groupPosts (
+  groupPostId SERIAL PRIMARY KEY,
+  groupId INTEGER REFERENCES groups(groupId),
+  userId INTEGER REFERENCES users(userId),
+  content TEXT,
+  createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  updatedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE events (
+  eventId SERIAL PRIMARY KEY,
+  name VARCHAR(100),
+  description TEXT,
+  location VARCHAR(255),
+  startTime TIMESTAMP,
+  endTime TIMESTAMP,
+  createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  updatedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE eventParticipants (
+  eventParticipantId SERIAL PRIMARY KEY,
+  eventId INTEGER REFERENCES events(eventId),
+  userId INTEGER REFERENCES users(userId),
+  status VARCHAR(20),
+  joinedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+```

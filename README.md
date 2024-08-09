@@ -95,4 +95,14 @@ CREATE TABLE messages (
     FOREIGN KEY (userId) REFERENCES users(userId),
     FOREIGN KEY (conversationId) REFERENCES conversations(conversationId)
 );
+
+CREATE TABLE notifications (
+    notificationId INTEGER PRIMARY KEY AUTOINCREMENT,
+    userId INTEGER NOT NULL,  -- El usuario que recibe la notificación
+    type TEXT NOT NULL,  -- Tipo de notificación: 'comment', 'like', 'message', etc.
+    referenceId INTEGER NOT NULL,  -- ID de la entidad referenciada (postId, messageId, etc.)
+    seen BOOLEAN DEFAULT 0,  -- Indica si el usuario ha visto la notificación
+    createdAt DATETIME DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (userId) REFERENCES users(userId)
+);
 ```

@@ -27,6 +27,17 @@ CREATE TABLE friendships (
     FOREIGN KEY (otherUserId) REFERENCES users(userId)
 );
 
+CREATE TABLE friendRequests (
+    requestId INTEGER PRIMARY KEY AUTOINCREMENT,
+    senderId INTEGER NOT NULL,
+    receiverId INTEGER NOT NULL,
+    status TEXT DEFAULT 'pending',  -- Estado: 'pending', 'accepted', 'rejected'
+    createdAt DATETIME DEFAULT CURRENT_TIMESTAMP,
+    updatedAt DATETIME DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (senderId) REFERENCES users(userId),
+    FOREIGN KEY (receiverId) REFERENCES users(userId)
+);
+
 CREATE TABLE posts (
     postId INTEGER PRIMARY KEY AUTOINCREMENT,
     userId INTEGER NOT NULL,

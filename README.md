@@ -6,118 +6,82 @@ Backend for Bonds
 
 ```sql
 CREATE TABLE users (
-  userId SERIAL PRIMARY KEY,
-  username VARCHAR(50) NOT NULL UNIQUE,
-  email VARCHAR(100) NOT NULL UNIQUE,
-  password VARCHAR(255) NOT NULL,
-  firstName VARCHAR(50),
-  lastName VARCHAR(50),
-  profilePhotoId INTEGER,
-  bio TEXT,
-  createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-  updatedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-);
-
-CREATE TABLE photos (
-  photoId SERIAL PRIMARY KEY,
-  userId INTEGER REFERENCES users(userId),
-  url TEXT NOT NULL,
-  createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-);
-
-CREATE TABLE posts (
-  postId SERIAL PRIMARY KEY,
-  userId INTEGER REFERENCES users(userId),
-  content TEXT,
-  createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-  updatedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-);
-
-CREATE TABLE comments (
-  commentId SERIAL PRIMARY KEY,
-  postId INTEGER REFERENCES posts(postId),
-  userId INTEGER REFERENCES users(userId),
-  content TEXT,
-  createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-  updatedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-);
-
-CREATE TABLE likes (
-  likeId SERIAL PRIMARY KEY,
-  userId INTEGER REFERENCES users(userId),
-  postId INTEGER REFERENCES posts(postId),
-  createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    userId INTEGER PRIMARY KEY AUTOINCREMENT,
+    username TEXT UNIQUE NOT NULL,
+    fullname TEXT NOT NULL,
+    email TEXT NOT NULL,
+    password TEXT NOT NULL,
+    phone TEXT,
+    profilePhoto TEXT,
+    bio TEXT,
+    createdAt DATETIME DEFAULT CURRENT_TIMESTAMP,
+    updatedAt DATETIME DEFAULT CURRENT_TIMESTAMP
 );
 
 CREATE TABLE friendships (
-  friendshipId SERIAL PRIMARY KEY,
-  userId INTEGER REFERENCES users(userId),
-  friendUserId INTEGER REFERENCES users(userId),
-  status VARCHAR(20),
-  createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-  updatedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    friendshipId INTEGER PRIMARY KEY AUTOINCREMENT,
+    userId INTEGER NOT NULL,
+    otherUserId INTEGER NOT NULL,
+    createdAt DATETIME DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (userId) REFERENCES users(userId),
+    FOREIGN KEY (otherUserId) REFERENCES users(userId)
+);
+
+CREATE TABLE posts (
+    postId INTEGER PRIMARY KEY AUTOINCREMENT,
+    userId INTEGER NOT NULL,
+    content TEXT NOT NULL,
+    createdAt DATETIME DEFAULT CURRENT_TIMESTAMP,
+    updatedAt DATETIME DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (userId) REFERENCES users(userId)
+);
+
+CREATE TABLE likes (
+    likeId INTEGER PRIMARY KEY AUTOINCREMENT,
+    postId INTEGER NOT NULL,
+    userId INTEGER NOT NULL,
+    createdAt DATETIME DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (postId) REFERENCES posts(postId),
+    FOREIGN KEY (userId) REFERENCES users(userId)
+);
+
+CREATE TABLE comments (
+    commentId INTEGER PRIMARY KEY AUTOINCREMENT,
+    postId INTEGER NOT NULL,
+    content TEXT NOT NULL,
+    createdAt DATETIME DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (postId) REFERENCES posts(postId)
+);
+
+CREATE TABLE photos (
+    photoId INTEGER PRIMARY KEY AUTOINCREMENT,
+    postId INTEGER NOT NULL,
+    url TEXT NOT NULL,
+    createdAt DATETIME DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (postId) REFERENCES posts(postId)
+);
+
+CREATE TABLE conversations (
+    conversationId INTEGER PRIMARY KEY AUTOINCREMENT,
+    name TEXT NOT NULL
+);
+
+CREATE TABLE conversationMembers (
+    conversationMemberId INTEGER PRIMARY KEY AUTOINCREMENT,
+    conversationId INTEGER NOT NULL,
+    userId INTEGER NOT NULL,
+    createdAt DATETIME DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (conversationId) REFERENCES conversations(conversationId),
+    FOREIGN KEY (userId) REFERENCES users(userId)
 );
 
 CREATE TABLE messages (
-  messageId SERIAL PRIMARY KEY,
-  senderId INTEGER REFERENCES users(userId),
-  receiverId INTEGER REFERENCES users(userId),
-  content TEXT,
-  createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-  updatedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    messageId INTEGER PRIMARY KEY AUTOINCREMENT,
+    userId INTEGER NOT NULL,
+    conversationId INTEGER NOT NULL,
+    content TEXT NOT NULL,
+    createdAt DATETIME DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (userId) REFERENCES users(userId),
+    FOREIGN KEY (conversationId) REFERENCES conversations(conversationId)
 );
-
-CREATE TABLE notifications (
-  notificationId SERIAL PRIMARY KEY,
-  userId INTEGER REFERENCES users(userId),
-  type VARCHAR(50),
-  message TEXT,
-  isRead BOOLEAN DEFAULT FALSE,
-  createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-);
-
-CREATE TABLE groups (
-  groupId SERIAL PRIMARY KEY,
-  name VARCHAR(100),
-  description TEXT,
-  createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-  updatedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-);
-
-CREATE TABLE groupMembers (
-  groupMemberId SERIAL PRIMARY KEY,
-  groupId INTEGER REFERENCES groups(groupId),
-  userId INTEGER REFERENCES users(userId),
-  role VARCHAR(50),
-  joinedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-);
-
-CREATE TABLE groupPosts (
-  groupPostId SERIAL PRIMARY KEY,
-  groupId INTEGER REFERENCES groups(groupId),
-  userId INTEGER REFERENCES users(userId),
-  content TEXT,
-  createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-  updatedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-);
-
-CREATE TABLE events (
-  eventId SERIAL PRIMARY KEY,
-  name VARCHAR(100),
-  description TEXT,
-  location VARCHAR(255),
-  startTime TIMESTAMP,
-  endTime TIMESTAMP,
-  createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-  updatedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-);
-
-CREATE TABLE eventParticipants (
-  eventParticipantId SERIAL PRIMARY KEY,
-  eventId INTEGER REFERENCES events(eventId),
-  userId INTEGER REFERENCES users(userId),
-  status VARCHAR(20),
-  joinedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-);
-
 ```

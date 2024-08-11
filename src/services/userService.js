@@ -1,8 +1,6 @@
-import { db } from '../config/database.js';
+import { sql } from '../config/database.js';
 
 export const getUsersService = async () => {
-    const { rows } = await db.execute({
-        sql: 'SELECT * FROM users'
-    });
-    return rows;
+    const result = await sql`SELECT * FROM users`
+    return result;
 };

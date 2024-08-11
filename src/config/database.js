@@ -1,9 +1,25 @@
-import { createClient } from '@libsql/client';
+import postgres from 'postgres'
 import { config } from 'dotenv';
 
-config()
+config();
 
-export const db = createClient({
-    url: process.env.TURSO_DATABASE_URL || 'libsql://talk-forjoa.turso.io', // update this line
-    authToken: process.env.TURSO_AUTH_TOKEN,
+let { PGHOST, PGDATABASE, PGUSER, PGPASSWORD, ENDPOINT_ID } = process.env;
+
+const sql = postgres({
+    host: PGHOST,
+    database: PGDATABASE,
+    username: PGUSER,
+    password: PGPASSWORD,
+    port: 5432,
+    ssl: 'require',
+    connection: {
+        options: `project=${ENDPOINT_ID}`,
+    },
 });
+
+async function getPgVersion() {
+    const result = await sql`select version()`;
+    console.log(result);
+}
+
+getPgVersion();

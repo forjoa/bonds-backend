@@ -16,10 +16,3 @@ export const sql = postgres({
         options: `project=${ENDPOINT_ID}`,
     },
 });
-
-async function getPgVersion() {
-    const result = await sql`select version()`;
-    console.log(result);
-}
-
-getPgVersion();

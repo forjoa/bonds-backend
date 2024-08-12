@@ -1,6 +1,9 @@
 import { sql } from '../config/database.js';
 import bcryptjs from 'bcryptjs';
 import jwt from 'jsonwebtoken';
+import { config } from 'dotenv';
+
+config();
 
 export const getUsersService = async () => {
     const result = await sql`SELECT * FROM users`
@@ -24,7 +27,7 @@ export const loginService = async ({ email, password }) => {
 
     const token = jwt.sign(
         userPayload,
-        '6d547069ab59b1f018df00788918178740a88853c84173f22ee64647d72f17e28274925ed4d57a28e78649d9996b9acd1c844cb389034d87a9835c38d49624a0',
+        process.env.SIGNATURE,
         { expiresIn: '7d' }
     )
 

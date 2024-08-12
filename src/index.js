@@ -4,6 +4,7 @@ import { Server } from 'socket.io';
 import bodyParser from 'body-parser';
 import userRoute from './routes/userRoute.js';
 import { config } from 'dotenv';
+import cors from 'cors';
 
 config();
 
@@ -12,6 +13,7 @@ const port = process.env.PORT || 3000;
 const hostname = process.env.HOSTNAME || 'localhost';
 
 app.use(bodyParser.json());
+app.use(cors());
 
 app.use('/api/users', userRoute);
 

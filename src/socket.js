@@ -10,7 +10,7 @@ export default function socketHandlers(io) {
         const user = validateToken(token);
         if (user) {
             socket.userid = user.userid;  // Asigna el ID del usuario al socket
-            socket.join(`user_${user.id}`);  // Une al usuario a un room específico
+            socket.join(`user_${user.userid}`);  // Une al usuario a un room específico
             next();
         } else {
             next(new Error('Authentication error'));

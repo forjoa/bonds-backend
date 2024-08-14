@@ -8,9 +8,10 @@ export default function socketHandlers(io) {
     io.use((socket, next) => {
         const token = socket.handshake.auth.token;
         const user = validateToken(token);
+        
         if (user) {
-            socket.userid = user.userid;  // Asigna el ID del usuario al socket
-            socket.join(`user_${user.userid}`);  // Une al usuario a un room específico
+            socket.userid = user.userid;  
+            socket.join(`user_${user.userid}`);  
             next();
         } else {
             next(new Error('Authentication error'));

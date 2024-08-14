@@ -9,7 +9,7 @@ export default function socketHandlers(io) {
         const token = socket.handshake.auth.token;
         const user = validateToken(token);
         if (user) {
-            socket.userId = user.id;  // Asigna el ID del usuario al socket
+            socket.userid = user.userid;  // Asigna el ID del usuario al socket
             socket.join(`user_${user.id}`);  // Une al usuario a un room específico
             next();
         } else {
@@ -18,7 +18,7 @@ export default function socketHandlers(io) {
     });
 
     io.on('connection', (socket) => {
-        console.log(`User ${socket.userId} connected`);
+        console.log(`User ${socket.userid} connected`);
 
         handleChatEvents(io, socket);
         handleLikeEvents(io, socket);
@@ -26,7 +26,7 @@ export default function socketHandlers(io) {
         handleFriendRequestEvents(io, socket);
 
         socket.on('disconnect', () => {
-            console.log(`User ${socket.userId} disconnected`);
+            console.log(`User ${socket.userid} disconnected`);
         });
     });
 }

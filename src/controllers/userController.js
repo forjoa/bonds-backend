@@ -1,4 +1,4 @@
-import { getUsersService, loginService } from '../services/userService.js';
+import { getUsersService, loginService, registerService } from '../services/userService.js';
 
 export const getUsers = async (req, res) => {
     try {
@@ -15,5 +15,14 @@ export const login = async (req, res) => {
         res.json(result)
     } catch (error) {
         res.status(500).json({ error: error.message })
+    }
+}
+
+export const register = async (req, res) => {
+    try {
+        const result = await registerService(req.body)
+        res.json(result)
+    } catch (error) {
+        res.status(500).json({ success: false, messsage: error.message })
     }
 }

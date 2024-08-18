@@ -14,6 +14,8 @@ export const getHomeService = async ({ userid }) => {
                                 posts.createdat,
                                 users.username,
                                 users.userid,
+                                users.fullname,
+                                users.profilephoto,
                                 COALESCE(
                                     json_agg(photos.url) FILTER (WHERE photos.url IS NOT NULL), '[]'
                                 ) AS photos

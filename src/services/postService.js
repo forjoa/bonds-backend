@@ -21,16 +21,21 @@ export const getHomeService = async ({ userid }) => {
             ) AS photos,
             COUNT(DISTINCT likes.likeid) AS like_count,
             COALESCE(
-                json_agg(
-                    json_build_object(
-                        'commentid', comments.commentid,
-                        'content', comments.content,
-                        'createdat', comments.createdat,
-                        'userid', commenters.userid,
-                        'fullname', commenters.fullname,
-                        'username', commenters.username
+                (
+                    SELECT json_agg(
+                        json_build_object(
+                            'commentid', comments.commentid,
+                            'content', comments.content,
+                            'createdat', comments.createdat,
+                            'userid', commenters.userid,
+                            'fullname', commenters.fullname,
+                            'username', commenters.username
+                        )
                     )
-                ) FILTER (WHERE comments.commentid IS NOT NULL), '[]'
+                    FROM comments
+                    JOIN users AS commenters ON comments.userid = commenters.userid
+                    WHERE comments.postid = posts.postid
+                ), '[]'
             ) AS comments
         FROM
             posts
@@ -41,8 +46,6 @@ export const getHomeService = async ({ userid }) => {
             )
             LEFT JOIN photos ON posts.postid = photos.postid
             LEFT JOIN likes ON posts.postid = likes.postid
-            LEFT JOIN comments ON posts.postid = comments.postid
-            LEFT JOIN users AS commenters ON comments.userid = commenters.userid
         WHERE
             posts.userid = ${userid}
             OR friendships.userid = ${userid}

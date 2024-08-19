@@ -20,22 +20,22 @@ export const getHomeService = async ({ userid }) => {
                 json_agg(DISTINCT photos.url) FILTER (WHERE photos.url IS NOT NULL), '[]'
             ) AS photos,
             COUNT(DISTINCT likes.likeid) AS likecount,
+            EXISTS (
+                SELECT 1 FROM likes
+                WHERE likes.postid = posts.postid
+                AND likes.userid = ${userid}
+            ) AS userliked,
             COALESCE(
-                (
-                    SELECT json_agg(
-                        json_build_object(
-                            'commentid', comments.commentid,
-                            'content', comments.content,
-                            'createdat', comments.createdat,
-                            'userid', commenters.userid,
-                            'fullname', commenters.fullname,
-                            'username', commenters.username
-                        )
+                json_agg(
+                    DISTINCT jsonb_build_object(
+                        'commentid', comments.commentid,
+                        'content', comments.content,
+                        'createdat', comments.createdat,
+                        'userid', comment_users.userid,
+                        'fullname', comment_users.fullname,
+                        'username', comment_users.username
                     )
-                    FROM comments
-                    JOIN users AS commenters ON comments.userid = commenters.userid
-                    WHERE comments.postid = posts.postid
-                ), '[]'
+                ) FILTER (WHERE comments.commentid IS NOT NULL), '[]'
             ) AS comments
         FROM
             posts
@@ -46,6 +46,8 @@ export const getHomeService = async ({ userid }) => {
             )
             LEFT JOIN photos ON posts.postid = photos.postid
             LEFT JOIN likes ON posts.postid = likes.postid
+            LEFT JOIN comments ON posts.postid = comments.postid
+            LEFT JOIN users AS comment_users ON comments.userid = comment_users.userid
         WHERE
             posts.userid = ${userid}
             OR friendships.userid = ${userid}
@@ -58,3 +60,4 @@ export const getHomeService = async ({ userid }) => {
 
     return result;
 }
+

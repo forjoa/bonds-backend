@@ -19,7 +19,7 @@ export const getHomeService = async ({ userid }) => {
             COALESCE(
                 json_agg(DISTINCT photos.url) FILTER (WHERE photos.url IS NOT NULL), '[]'
             ) AS photos,
-            COUNT(DISTINCT likes.likeid) AS like_count,
+            COUNT(DISTINCT likes.likeid) AS likecount,
             COALESCE(
                 (
                     SELECT json_agg(

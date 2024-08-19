@@ -8,34 +8,50 @@ export const uploadPostService = async ({ userid, content }) => {
 
 export const getHomeService = async ({ userid }) => {
     const result = await sql`
-                            SELECT
-                                posts.postid,
-                                posts.content,
-                                posts.createdat,
-                                users.username,
-                                users.userid,
-                                users.fullname,
-                                users.profilephoto,
-                                COALESCE(
-                                    json_agg(photos.url) FILTER (WHERE photos.url IS NOT NULL), '[]'
-                                ) AS photos
-                            FROM
-                                posts
-                                JOIN users on posts.userid = users.userid
-                                LEFT JOIN friendships on (
-                                    (friendships.userid = users.userid AND friendships.otheruserid = ${userid})
-                                    OR (friendships.otheruserid = users.userid AND friendships.userid = ${userid})
-                                )
-                                LEFT JOIN photos on posts.postid = photos.postid
-                            WHERE
-                                posts.userid = ${userid}
-                                OR friendships.userid = ${userid}
-                                OR friendships.otheruserid = ${userid}
-                            GROUP BY
-                                posts.postid, posts.content, posts.createdat, users.username, users.userid
-                            ORDER BY
-                                posts.createdat DESC;
-                        `;
+        SELECT
+            posts.postid,
+            posts.content,
+            posts.createdat,
+            users.username,
+            users.userid,
+            users.fullname,
+            users.profilephoto,
+            COALESCE(
+                json_agg(DISTINCT photos.url) FILTER (WHERE photos.url IS NOT NULL), '[]'
+            ) AS photos,
+            COUNT(DISTINCT likes.likeid) AS like_count,
+            COALESCE(
+                json_agg(
+                    json_build_object(
+                        'commentid', comments.commentid,
+                        'content', comments.content,
+                        'createdat', comments.createdat,
+                        'userid', commenters.userid,
+                        'fullname', commenters.fullname,
+                        'username', commenters.username
+                    )
+                ) FILTER (WHERE comments.commentid IS NOT NULL), '[]'
+            ) AS comments
+        FROM
+            posts
+            JOIN users ON posts.userid = users.userid
+            LEFT JOIN friendships ON (
+                (friendships.userid = users.userid AND friendships.otheruserid = ${userid})
+                OR (friendships.otheruserid = users.userid AND friendships.userid = ${userid})
+            )
+            LEFT JOIN photos ON posts.postid = photos.postid
+            LEFT JOIN likes ON posts.postid = likes.postid
+            LEFT JOIN comments ON posts.postid = comments.postid
+            LEFT JOIN users AS commenters ON comments.userid = commenters.userid
+        WHERE
+            posts.userid = ${userid}
+            OR friendships.userid = ${userid}
+            OR friendships.otheruserid = ${userid}
+        GROUP BY
+            posts.postid, posts.content, posts.createdat, users.username, users.userid, users.fullname, users.profilephoto
+        ORDER BY
+            posts.createdat DESC;
+    `;
 
-    return result
+    return result;
 }

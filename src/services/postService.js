@@ -61,3 +61,9 @@ export const getHomeService = async ({ userid }) => {
     return result;
 }
 
+export const likeService = async ({ postid, userid }) => {
+    const result = await sql`INSERT INTO likes (postid, userid) VALUES (${postid}, ${userid})`
+
+    return result.length === 0 ? { success: true, message: 'Like given correctly.' } : { success: false, message: 'Something went wrong.' }
+}
+

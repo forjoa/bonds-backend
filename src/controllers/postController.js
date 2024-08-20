@@ -1,4 +1,4 @@
-import { getHomeService, likeService, uploadPostService } from "../services/postService.js"
+import { commentService, getHomeService, likeService, uploadPostService } from "../services/postService.js"
 
 export const uploadPost = async (req, res) => {
     try {
@@ -21,6 +21,15 @@ export const getHome = async (req, res) => {
 export const like = async (req, res) => {
     try {
         const result = await likeService(req.body)
+        res.json(result)
+    } catch (error) {
+        res.status(500).json({ error: error.message })
+    }
+}
+
+export const comment = async (req, res) => {
+    try {
+        const result = await commentService(req.body)
         res.json(result)
     } catch (error) {
         res.status(500).json({ error: error.message })

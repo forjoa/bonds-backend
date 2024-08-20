@@ -62,8 +62,13 @@ export const getHomeService = async ({ userid }) => {
 }
 
 export const likeService = async ({ postid, userid }) => {
-    const result = await sql`INSERT INTO likes (postid, userid) VALUES (${postid}, ${userid})`
+    const [{ count }] = await sql`SELECT COUNT(*)::int FROM likes WHERE postid = ${postid} AND userid = ${userid}`
 
-    return result.length === 0 ? { success: true, message: 'Like given correctly.' } : { success: false, message: 'Something went wrong.' }
+    if (count === 0) {
+        await sql`INSERT INTO likes (postid, userid) VALUES (${postid}, ${userid})`
+        return { success: true, message: 'Like given correctly.' }
+    } else {
+        await sql`DELETE FROM likes WHERE postid = ${postid} AND userid = ${userid}`
+        return { success: true, message: 'Like deleted correctly.' }
+    }
 }
-

@@ -72,3 +72,9 @@ export const likeService = async ({ postid, userid }) => {
         return { success: true, message: 'Like deleted correctly.' }
     }
 }
+
+export const commentService = async ({ userid, postid, content }) => {
+    const result = await sql`INSERT INTO comments (postid, userid, content) VALUES (${postid}, ${userid}, ${content})`
+
+    return result.length === 0 ? { success: true, message: 'Comment sent correctly.' } : { success: false, message: 'Something went wrong.' }
+}

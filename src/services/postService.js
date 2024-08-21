@@ -1,10 +1,30 @@
 import { sql } from "../config/database.js"
 
-export const uploadPostService = async ({ userid, content }) => {
-    const result = await sql`INSERT INTO posts (userid, content) VALUES (${userid}, ${content})`
+export const uploadPostService = async ({ userid, content, files }) => {
+    try {
+        const [newPost] = await sql`
+        INSERT INTO posts (userid, content)
+        VALUES (${userid}, ${content})
+        RETURNING postid;
+      `;
 
-    return result.length === 0 ? { success: true, message: 'Post uploaded correctly.' } : { success: false, message: 'Something went wrong.' }
-}
+        const postid = newPost.postid;
+
+        if (files.length > 0) {
+            const photoInsertions = files.map((file) =>
+                sql`INSERT INTO photos (postid, url) VALUES (${postid}, ${file})`
+            );
+
+            await Promise.all(photoInsertions);
+        }
+
+        return { success: true, message: 'Post and files uploaded correctly.' };
+    } catch (error) {
+        console.error('Error uploading post:', error);
+        return { success: false, message: 'Something went wrong during upload.' };
+    }
+};
+
 
 export const getHomeService = async ({ userid }) => {
     const result = await sql`

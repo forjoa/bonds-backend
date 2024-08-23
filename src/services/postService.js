@@ -25,8 +25,9 @@ export const uploadPostService = async ({ userid, content, files }) => {
     }
 };
 
+export const getHomeService = async ({ userid, page, limit }) => {
+    const offset = (page - 1) * limit;
 
-export const getHomeService = async ({ userid }) => {
     const result = await sql`
         SELECT
             posts.postid,
@@ -75,11 +76,12 @@ export const getHomeService = async ({ userid }) => {
         GROUP BY
             posts.postid, posts.content, posts.createdat, users.username, users.userid, users.fullname, users.profilephoto
         ORDER BY
-            posts.createdat DESC;
+            posts.createdat DESC
+        LIMIT ${limit} OFFSET ${offset};
     `;
 
     return result;
-}
+};
 
 export const likeService = async ({ postid, userid }) => {
     const [{ count }] = await sql`SELECT COUNT(*)::int FROM likes WHERE postid = ${postid} AND userid = ${userid}`

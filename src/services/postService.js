@@ -87,8 +87,16 @@ export const likeService = async ({ postid, userid }) => {
     const [{ count }] = await sql`SELECT COUNT(*)::int FROM likes WHERE postid = ${postid} AND userid = ${userid}`
 
     if (count === 0) {
-        await sql`INSERT INTO likes (postid, userid) VALUES (${postid}, ${userid})`
-        return { success: true, message: 'Like given correctly.' }
+        const [insertResult] = await sql`
+        INSERT INTO likes (postid, userid) 
+        VALUES (${postid}, ${userid})
+        RETURNING likeid
+      `
+        return {
+            success: true,
+            message: 'Like given correctly.',
+            referenceid: insertResult.likeid
+        }
     } else {
         await sql`DELETE FROM likes WHERE postid = ${postid} AND userid = ${userid}`
         return { success: true, message: 'Like deleted correctly.' }
@@ -96,10 +104,24 @@ export const likeService = async ({ postid, userid }) => {
 }
 
 export const commentService = async ({ userid, postid, content }) => {
-    const result = await sql`INSERT INTO comments (postid, userid, content) VALUES (${postid}, ${userid}, ${content})`
+    const [insertResult] = await sql`
+      INSERT INTO comments (postid, userid, content) 
+      VALUES (${postid}, ${userid}, ${content}) 
+      RETURNING commentid
+    `
 
-    return result.length === 0 ? { success: true, message: 'Comment sent correctly.' } : { success: false, message: 'Something went wrong.' }
+    return insertResult
+        ? {
+            success: true,
+            message: 'Comment sent correctly.',
+            referenceid: insertResult.commentid
+        }
+        : {
+            success: false,
+            message: 'Something went wrong.'
+        }
 }
+
 
 export const getMyPostsService = async ({ userid, page, limit }) => {
     const offset = (page - 1) * limit;

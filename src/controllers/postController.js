@@ -38,7 +38,7 @@ export const comment = async (req, res) => {
 
 export const myProfile = async (req, res) => {
     try {
-        const result = await getMyPostsService(req)
+        const result = await getMyPostsService(req.body)
         res.json(result)
     } catch (error) {
         res.status(500).json({ error: error.message })

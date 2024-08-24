@@ -5,6 +5,7 @@ import bodyParser from 'body-parser';
 import userRoute from './routes/userRoute.js';
 import authRoute from './routes/authRoute.js';
 import postRoute from './routes/postRoute.js';
+import notificationRoute from './routes/notificationRoute.js';
 import { config } from 'dotenv';
 import cors from 'cors';
 
@@ -20,6 +21,7 @@ app.use(cors());
 app.use('/api/users', userRoute);
 app.use('/api/auth', authRoute)
 app.use('/api/posts', postRoute)
+app.use('/api/notifications', notificationRoute)
 
 const httpServer = createServer(app);
 const io = new Server(httpServer, {

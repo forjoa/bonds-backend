@@ -1,34 +1,35 @@
-import { sql } from "../config/database.js"
+import { sql } from '../config/database.js'
 
 export const uploadPostService = async ({ userid, content, files }) => {
-    try {
-        const [newPost] = await sql`
+  try {
+    const [newPost] = await sql`
         INSERT INTO posts (userid, content)
         VALUES (${userid}, ${content})
         RETURNING postid;
-      `;
+      `
 
-        const postid = newPost.postid;
+    const postid = newPost.postid
 
-        if (files.length > 0) {
-            const photoInsertions = files.map((file) =>
-                sql`INSERT INTO photos (postid, url) VALUES (${postid}, ${file})`
-            );
+    if (files.length > 0) {
+      const photoInsertions = files.map(
+        (file) =>
+          sql`INSERT INTO photos (postid, url) VALUES (${postid}, ${file})`,
+      )
 
-            await Promise.all(photoInsertions);
-        }
-
-        return { success: true, message: 'Post and files uploaded correctly.' };
-    } catch (error) {
-        console.error('Error uploading post:', error);
-        return { success: false, message: 'Something went wrong during upload.' };
+      await Promise.all(photoInsertions)
     }
-};
+
+    return { success: true, message: 'Post and files uploaded correctly.' }
+  } catch (error) {
+    console.error('Error uploading post:', error)
+    return { success: false, message: 'Something went wrong during upload.' }
+  }
+}
 
 export const getHomeService = async ({ userid, page, limit }) => {
-    const offset = (page - 1) * limit;
+  const offset = (page - 1) * limit
 
-    const result = await sql`
+  const result = await sql`
         SELECT
             posts.postid,
             posts.content,
@@ -78,55 +79,55 @@ export const getHomeService = async ({ userid, page, limit }) => {
         ORDER BY
             posts.createdat DESC
         LIMIT ${limit} OFFSET ${offset};
-    `;
+    `
 
-    return result;
-};
+  return result
+}
 
 export const likeService = async ({ postid, userid }) => {
-    const [{ count }] = await sql`SELECT COUNT(*)::int FROM likes WHERE postid = ${postid} AND userid = ${userid}`
+  const [{ count }] =
+    await sql`SELECT COUNT(*)::int FROM likes WHERE postid = ${postid} AND userid = ${userid}`
 
-    if (count === 0) {
-        const [insertResult] = await sql`
+  if (count === 0) {
+    const [insertResult] = await sql`
         INSERT INTO likes (postid, userid) 
         VALUES (${postid}, ${userid})
         RETURNING likeid
       `
-        return {
-            success: true,
-            message: 'Like given correctly.',
-            referenceid: insertResult.likeid
-        }
-    } else {
-        await sql`DELETE FROM likes WHERE postid = ${postid} AND userid = ${userid}`
-        return { success: true, message: 'Like deleted correctly.' }
+    return {
+      success: true,
+      message: 'Like given correctly.',
+      referenceid: insertResult.likeid,
     }
+  } else {
+    await sql`DELETE FROM likes WHERE postid = ${postid} AND userid = ${userid}`
+    return { success: true, message: 'Like deleted correctly.' }
+  }
 }
 
 export const commentService = async ({ userid, postid, content }) => {
-    const [insertResult] = await sql`
+  const [insertResult] = await sql`
       INSERT INTO comments (postid, userid, content) 
       VALUES (${postid}, ${userid}, ${content}) 
       RETURNING commentid
     `
 
-    return insertResult
-        ? {
-            success: true,
-            message: 'Comment sent correctly.',
-            referenceid: insertResult.commentid
-        }
-        : {
-            success: false,
-            message: 'Something went wrong.'
-        }
+  return insertResult
+    ? {
+        success: true,
+        message: 'Comment sent correctly.',
+        referenceid: insertResult.commentid,
+      }
+    : {
+        success: false,
+        message: 'Something went wrong.',
+      }
 }
 
-
 export const getMyPostsService = async ({ userid, page, limit }) => {
-    const offset = (page - 1) * limit;
+  const offset = (page - 1) * limit
 
-    const result = await sql`
+  const result = await sql`
         SELECT
             posts.postid,
             posts.content,
@@ -170,7 +171,7 @@ export const getMyPostsService = async ({ userid, page, limit }) => {
         ORDER BY
             posts.createdat DESC
         LIMIT ${limit} OFFSET ${offset};
-    `;
+    `
 
-    return result;
-};
+  return result
+}

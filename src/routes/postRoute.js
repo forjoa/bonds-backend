@@ -1,7 +1,13 @@
-import express from 'express';
-import { comment, getHome, like, myProfile, uploadPost } from '../controllers/postController.js';
+import express from 'express'
+import {
+  comment,
+  getHome,
+  like,
+  myProfile,
+  uploadPost,
+} from '../controllers/postController.js'
 
-const router = express.Router();
+const router = express.Router()
 
 router.post('/uploadPost', uploadPost)
 router.post('/getHome', getHome)

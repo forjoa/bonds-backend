@@ -1,7 +1,12 @@
-import { sql } from "../config/database.js"
+import { sql } from '../config/database.js'
 
-export const newNotificationService = async ({ userid, type, referenceid, seen = false }) => {
-    await sql`INSERT INTO notifications (
+export const newNotificationService = async ({
+  userid,
+  type,
+  referenceid,
+  seen = false,
+}) => {
+  await sql`INSERT INTO notifications (
                                     userid, 
                                     type, 
                                     referenceid, 

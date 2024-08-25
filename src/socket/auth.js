@@ -1,13 +1,13 @@
-import jwt from 'jsonwebtoken';
-import { config } from 'dotenv';
+import jwt from 'jsonwebtoken'
+import { config } from 'dotenv'
 
-config();
+config()
 
 export function validateToken(token) {
-    try {
-        const decoded = jwt.verify(token, process.env.SIGNATURE);
-        return decoded;
-    } catch (err) {
-        return null;
-    }
+  try {
+    const decoded = jwt.verify(token, process.env.SIGNATURE)
+    return decoded
+  } catch (err) {
+    return null
+  }
 }

@@ -1,7 +1,7 @@
-import express from 'express';
-import { newNotification } from '../controllers/notificationController.js';
+import express from 'express'
+import { newNotification } from '../controllers/notificationController.js'
 
-const router = express.Router();
+const router = express.Router()
 
 router.post('/newNotification', newNotification)
 

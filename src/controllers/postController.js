@@ -4,6 +4,7 @@ import {
   getMyPostsService,
   likeService,
   uploadPostService,
+  getPostInfoService,
 } from '../services/postService.js'
 
 export const uploadPost = async (req, res) => {
@@ -45,6 +46,15 @@ export const comment = async (req, res) => {
 export const myProfile = async (req, res) => {
   try {
     const result = await getMyPostsService(req.body)
+    res.json(result)
+  } catch (error) {
+    res.status(500).json({ error: error.message })
+  }
+}
+
+export const getPostInfo = async (req, res) => {
+  try {
+    const result = await getPostInfoService(req.body)
     res.json(result)
   } catch (error) {
     res.status(500).json({ error: error.message })

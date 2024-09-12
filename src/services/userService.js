@@ -23,9 +23,9 @@ export const loginService = async ({ email, password }) => {
     return { success: false, message: 'Incorrect password.' }
   }
 
-  const { password: _, ...userPayload } = userInfo
+  delete userInfo.password
 
-  const token = jwt.sign(userPayload, process.env.SIGNATURE, {
+  const token = jwt.sign(userInfo, process.env.SIGNATURE, {
     expiresIn: '7d',
   })
 

@@ -23,7 +23,7 @@ export const newNotificationService = async ({
 
 export const getNotificationsService = async ({ id }) => {
   const notifications = await sql`
-    SELECT n.type, n.referenceid, u.username, u.profilephoto, n.seen,
+    SELECT n.type, n.referenceid, u.username, u.profilephoto, n.seen, n.notificationid,
            CASE 
              WHEN n.type = 'like' THEN l.postid
              WHEN n.type = 'comment' THEN c.postid

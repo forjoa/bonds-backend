@@ -1,4 +1,4 @@
-import { newNotificationService, getNotificationsService } from '../services/notificationService.js'
+import { newNotificationService, getNotificationsService, markAsReadAllService } from '../services/notificationService.js'
 
 export const newNotification = async (req, res) => {
   try {
@@ -12,6 +12,22 @@ export const newNotification = async (req, res) => {
 export const getNotifications = async (req, res) => {
   try {
     const result = await getNotificationsService(req.body)
+    res.json(result)
+  } catch (error) {
+    res.status(500).json({ success: false, messsage: error.message })
+  }
+}
+export const markAsRead = async (req, res) => {
+  try {
+    const result = await markAsReadService(req.body)
+    res.json(result)
+  } catch (error) {
+    res.status(500).json({ success: false, messsage: error.message })
+  }
+}
+export const markAsReadAll = async (req, res) => {
+  try {
+    const result = await markAsReadAllService(req.body)
     res.json(result)
   } catch (error) {
     res.status(500).json({ success: false, messsage: error.message })

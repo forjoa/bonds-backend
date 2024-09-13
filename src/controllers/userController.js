@@ -1,8 +1,7 @@
 import {
   getUsersService,
   loginService,
-  registerService,
-  getNotificationsService
+  registerService
 } from '../services/userService.js'
 
 export const getUsers = async (req, res) => {
@@ -31,11 +30,4 @@ export const register = async (req, res) => {
     res.status(500).json({ success: false, messsage: error.message })
   }
 }
-export const getNotifications = async (req, res) => {
-  try {
-    const result = await getNotificationsService(req.body)
-    res.json(result)
-  } catch (error) {
-    res.status(500).json({ success: false, messsage: error.message })
-  }
-}
+

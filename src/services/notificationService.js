@@ -46,7 +46,12 @@ export const getNotificationsService = async ({ id }) => {
 };
 
 export const markAsReadService = async ({ id }) => {
-
+  try {
+    const result = await sql`update notifications set seen = true where notificationid = ${id}`;
+    return result;
+  } catch (error) {
+    throw error; 
+  }
 }
 
 export const markAsReadAllService = async ({ id }) => {

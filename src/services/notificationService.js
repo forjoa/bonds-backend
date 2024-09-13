@@ -45,11 +45,15 @@ export const getNotificationsService = async ({ id }) => {
   return notifications;
 };
 
+export const markAsReadService = async ({ id }) => {
+
+}
+
 export const markAsReadAllService = async ({ id }) => {
   try {
-    const result = await sql`update notifications set seen = true where userid = ${sql(id)}`;
+    const result = await sql`update notifications set seen = true where userid = ${id}`;
     return result;
   } catch (error) {
     throw error; 
   }
-};
+}; 

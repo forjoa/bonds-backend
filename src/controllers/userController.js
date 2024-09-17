@@ -1,7 +1,8 @@
 import {
   getUsersService,
   loginService,
-  registerService
+  registerService,
+  editProfileService
 } from '../services/userService.js'
 
 export const getUsers = async (req, res) => {
@@ -25,6 +26,14 @@ export const login = async (req, res) => {
 export const register = async (req, res) => {
   try {
     const result = await registerService(req.body)
+    res.json(result)
+  } catch (error) {
+    res.status(500).json({ success: false, messsage: error.message })
+  }
+}
+export const editProfile = async (req, res) => {
+  try {
+    const result = await editProfileService(req.body)
     res.json(result)
   } catch (error) {
     res.status(500).json({ success: false, messsage: error.message })

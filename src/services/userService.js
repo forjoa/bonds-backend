@@ -67,4 +67,36 @@ export const registerService = async ({
     : { success: false, message: 'Something went wrong.' }
 }
 
+export const editProfileService = async ({
+  userid, 
+  username, 
+  fullname, 
+  email, 
+  password, 
+  phone, 
+  profilephoto, 
+  bio}) => {
+    try {
+      const hashedPassword = await bcryptjs.hash(password, 10)
+      const result = await sql`UPDATE users
+                               SET username = ${username},
+                                   fullname = ${fullname},
+                                   email = ${email},
+                                   phone = ${phone}, 
+                                   profilephoto = ${profilephoto},
+                                   password = ${hashedPassword},
+                                   bio = ${bio}
+                                WHERE userid = ${userid};`
+    } catch (error) {
+      console.error('Error updating profile: ', error)
+      throw new Error('Failed to update profile')
+    }
+
+
+};
+
+
+
+
+
 

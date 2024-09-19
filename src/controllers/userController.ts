@@ -4,7 +4,7 @@ import {
   loginService,
   registerService,
   editProfileService,
-} from '@/services/userService'
+} from '../services/userService.js'
 
 export const getUsers = async (req: Request, res: Response) => {
   try {

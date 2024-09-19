@@ -1,6 +1,6 @@
 import jwt from 'jsonwebtoken'
 import { config } from 'dotenv'
-import { sql } from '@/config/database'
+import { sql } from '../config/database.js'
 
 config()
 

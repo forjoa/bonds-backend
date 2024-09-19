@@ -1,4 +1,4 @@
-import { sql } from '@/config/database'
+import { sql } from '../config/database.js'
 
 export const newNotificationService = async ({
   userid,

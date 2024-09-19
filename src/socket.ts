@@ -1,10 +1,10 @@
 import { Server, Socket } from 'socket.io'
 import { DefaultEventsMap } from 'socket.io/dist/typed-events'
-import { validateToken } from './socket/auth'
-import handleChatEvents from './socket/chatHandler'
-import handleLikeEvents from './socket/likeHandler'
-import handleCommentEvents from './socket/commentHandler'
-import handleFriendRequestEvents from './socket/friendRequestHandler'
+import { validateToken } from './socket/auth.js'
+import handleChatEvents from './socket/chatHandler.js'
+import handleLikeEvents from './socket/likeHandler.js'
+import handleCommentEvents from './socket/commentHandler.js'
+import handleFriendRequestEvents from './socket/friendRequestHandler.js'
 
 interface User {
   userid: number

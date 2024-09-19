@@ -1,4 +1,4 @@
-import { sql } from '@/config/database'
+import { sql } from '../config/database.js'
 import bcryptjs from 'bcryptjs'
 import jwt from 'jsonwebtoken'
 import { config } from 'dotenv'

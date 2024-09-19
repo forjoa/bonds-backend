@@ -1,5 +1,5 @@
 import { Request, Response } from 'express'
-import { verifyTokenService } from '@/services/authService'
+import { verifyTokenService } from '../services/authService.js'
 
 export const verifyToken = async (req: Request, res: Response) => {
   try {

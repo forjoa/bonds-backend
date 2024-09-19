@@ -6,7 +6,7 @@ import {
   likeService,
   uploadPostService,
   getPostInfoService,
-} from '@/services/postService'
+} from '../services/postService.js'
 
 export const uploadPost = async (req: Request, res: Response) => {
   try {

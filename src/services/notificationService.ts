@@ -1,10 +1,15 @@
-import { sql } from '../config/database.js'
+import { sql } from '@/config/database'
 
 export const newNotificationService = async ({
   userid,
   type,
   referenceid,
   seen = false,
+}: {
+  userid: number
+  type: string
+  referenceid: number
+  seen?: boolean
 }) => {
   await sql`INSERT INTO notifications (
                                     userid, 
@@ -20,8 +25,7 @@ export const newNotificationService = async ({
                         )`
 }
 
-
-export const getNotificationsService = async ({ id }) => {
+export const getNotificationsService = async ({ id }: { id: number }) => {
   const notifications = await sql`
     SELECT n.type, n.referenceid, u.username, u.profilephoto, n.seen, n.notificationid,
            CASE 
@@ -40,25 +44,27 @@ export const getNotificationsService = async ({ id }) => {
     LEFT JOIN comments c ON n.type = 'comment' AND c.commentid = n.referenceid
     -- Agrega más LEFT JOINs según sea necesario para otros tipos
     WHERE n.userid = ${id} AND u.userid != ${id}
-  `;
+  `
 
-  return notifications;
-};
+  return notifications
+}
 
-export const markAsReadService = async ({ id }) => {
+export const markAsReadService = async ({ id }: { id: number }) => {
   try {
-    const result = await sql`update notifications set seen = true where notificationid = ${id}`;
-    return result;
+    const result =
+      await sql`update notifications set seen = true where notificationid = ${id}`
+    return result
   } catch (error) {
-    throw error; 
+    throw error
   }
 }
 
-export const markAsReadAllService = async ({ id }) => {
+export const markAsReadAllService = async ({ id }: { id: number }) => {
   try {
-    const result = await sql`update notifications set seen = true where userid = ${id}`;
-    return result;
+    const result =
+      await sql`update notifications set seen = true where userid = ${id}`
+    return result
   } catch (error) {
-    throw error; 
+    throw error
   }
-}; 
+}

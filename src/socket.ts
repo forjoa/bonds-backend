@@ -1,16 +1,28 @@
-import { validateToken } from './socket/auth.js'
-import handleChatEvents from './socket/chatHandler.js'
-import handleLikeEvents from './socket/likeHandler.js'
-import handleCommentEvents from './socket/commentHandler.js'
-import handleFriendRequestEvents from './socket/friendRequestHandler.js'
+import { Server, Socket } from 'socket.io'
+import { DefaultEventsMap } from 'socket.io/dist/typed-events'
+import { validateToken } from './socket/auth'
+import handleChatEvents from './socket/chatHandler'
+import handleLikeEvents from './socket/likeHandler'
+import handleCommentEvents from './socket/commentHandler'
+import handleFriendRequestEvents from './socket/friendRequestHandler'
 
-export default function socketHandlers(io) {
-  io.use((socket, next) => {
+interface User {
+  userid: number
+}
+
+interface CustomSocket extends Socket {
+  userid: number
+}
+
+export default function socketHandlers(
+  io: Server<DefaultEventsMap, DefaultEventsMap, DefaultEventsMap, User>
+) {
+  io.use((socket: Socket, next) => {
     const token = socket.handshake.auth.token
-    const user = validateToken(token)
+    const user = validateToken(token) as User | null
 
     if (user) {
-      socket.userid = user.userid
+      ;(socket as CustomSocket).userid = user.userid
       socket.join(`user_${user.userid}`)
       next()
     } else {
@@ -18,16 +30,17 @@ export default function socketHandlers(io) {
     }
   })
 
-  io.on('connection', (socket) => {
-    console.log(`User ${socket.userid} connected`)
+  io.on('connection', (socket: Socket) => {
+    const customSocket = socket as CustomSocket
+    console.log(`User ${customSocket.userid} connected`)
 
-    handleChatEvents(io, socket)
-    handleLikeEvents(io, socket)
-    handleCommentEvents(io, socket)
-    handleFriendRequestEvents(io, socket)
+    handleChatEvents(io, customSocket)
+    handleLikeEvents(io, customSocket)
+    handleCommentEvents(io, customSocket)
+    handleFriendRequestEvents(io, customSocket)
 
-    socket.on('disconnect', () => {
-      console.log(`User ${socket.userid} disconnected`)
+    customSocket.on('disconnect', () => {
+      console.log(`User ${customSocket.userid} disconnected`)
     })
   })
 }

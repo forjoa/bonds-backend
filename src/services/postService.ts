@@ -1,6 +1,14 @@
 import { sql } from '../config/database.js'
 
-export const uploadPostService = async ({ userid, content, files }) => {
+export const uploadPostService = async ({
+  userid,
+  content,
+  files,
+}: {
+  userid: number
+  content: string
+  files: string[]
+}) => {
   try {
     const [newPost] = await sql`
         INSERT INTO posts (userid, content)
@@ -13,7 +21,7 @@ export const uploadPostService = async ({ userid, content, files }) => {
     if (files.length > 0) {
       const photoInsertions = files.map(
         (file) =>
-          sql`INSERT INTO photos (postid, url) VALUES (${postid}, ${file})`,
+          sql`INSERT INTO photos (postid, url) VALUES (${postid}, ${file})`
       )
 
       await Promise.all(photoInsertions)
@@ -26,7 +34,15 @@ export const uploadPostService = async ({ userid, content, files }) => {
   }
 }
 
-export const getHomeService = async ({ userid, page, limit }) => {
+export const getHomeService = async ({
+  userid,
+  page,
+  limit,
+}: {
+  userid: number
+  page: number
+  limit: number
+}) => {
   const offset = (page - 1) * limit
 
   const result = await sql`
@@ -84,7 +100,13 @@ export const getHomeService = async ({ userid, page, limit }) => {
   return result
 }
 
-export const likeService = async ({ postid, userid }) => {
+export const likeService = async ({
+  postid,
+  userid,
+}: {
+  postid: number
+  userid: number
+}) => {
   const [{ count }] =
     await sql`SELECT COUNT(*)::int FROM likes WHERE postid = ${postid} AND userid = ${userid}`
 
@@ -105,7 +127,15 @@ export const likeService = async ({ postid, userid }) => {
   }
 }
 
-export const commentService = async ({ userid, postid, content }) => {
+export const commentService = async ({
+  userid,
+  postid,
+  content,
+}: {
+  userid: number
+  postid: number
+  content: string
+}) => {
   const [insertResult] = await sql`
       INSERT INTO comments (postid, userid, content) 
       VALUES (${postid}, ${userid}, ${content}) 
@@ -124,7 +154,15 @@ export const commentService = async ({ userid, postid, content }) => {
       }
 }
 
-export const getMyPostsService = async ({ userid, page, limit }) => {
+export const getMyPostsService = async ({
+  userid,
+  page,
+  limit,
+}: {
+  userid: number
+  page: number
+  limit: number
+}) => {
   const offset = (page - 1) * limit
 
   const result = await sql`
@@ -176,7 +214,13 @@ export const getMyPostsService = async ({ userid, page, limit }) => {
   return result
 }
 
-export const getPostInfoService = async ({ userid, postid }) => {
+export const getPostInfoService = async ({
+  userid,
+  postid,
+}: {
+  userid: number
+  postid: number
+}) => {
   const result = await sql`
     SELECT
         posts.postid,

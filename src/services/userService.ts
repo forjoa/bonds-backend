@@ -10,7 +10,13 @@ export const getUsersService = async () => {
   return result
 }
 
-export const loginService = async ({ email, password }) => {
+export const loginService = async ({
+  email,
+  password,
+}: {
+  email: string
+  password: string
+}) => {
   const result = await sql`SELECT * FROM users WHERE email = ${email}`
 
   if (!result[0]) {
@@ -25,7 +31,7 @@ export const loginService = async ({ email, password }) => {
 
   delete userInfo.password
 
-  const token = jwt.sign(userInfo, process.env.SIGNATURE, {
+  const token = jwt.sign(userInfo, process.env.SIGNATURE as string, {
     expiresIn: '7d',
   })
 
@@ -40,6 +46,14 @@ export const registerService = async ({
   phone,
   profilephoto,
   bio,
+}: {
+  username: string
+  fullname: string
+  email: string
+  password: string
+  phone: string
+  profilephoto: string
+  bio: string
 }) => {
   const emailFlag = await sql`SELECT * FROM users WHERE email = ${email}`
 
@@ -68,17 +82,27 @@ export const registerService = async ({
 }
 
 export const editProfileService = async ({
-  userid, 
-  username, 
-  fullname, 
-  email, 
-  password, 
-  phone, 
-  profilephoto, 
-  bio}) => {
-    try {
-      const hashedPassword = await bcryptjs.hash(password, 10)
-      const result = await sql`UPDATE users
+  userid,
+  username,
+  fullname,
+  email,
+  password,
+  phone,
+  profilephoto,
+  bio,
+}: {
+  userid: number
+  username: string
+  fullname: string
+  email: string
+  password: string
+  phone: string
+  profilephoto: string
+  bio: string
+}) => {
+  try {
+    const hashedPassword = await bcryptjs.hash(password, 10)
+    const result = await sql`UPDATE users
                                SET username = ${username},
                                    fullname = ${fullname},
                                    email = ${email},
@@ -87,16 +111,8 @@ export const editProfileService = async ({
                                    password = ${hashedPassword},
                                    bio = ${bio}
                                 WHERE userid = ${userid};`
-    } catch (error) {
-      console.error('Error updating profile: ', error)
-      throw new Error('Failed to update profile')
-    }
-
-
-};
-
-
-
-
-
-
+  } catch (error) {
+    console.error('Error updating profile: ', error)
+    throw new Error('Failed to update profile')
+  }
+}

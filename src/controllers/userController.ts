@@ -1,42 +1,42 @@
+import { Request, Response } from 'express'
 import {
   getUsersService,
   loginService,
   registerService,
-  editProfileService
-} from '../services/userService.js'
+  editProfileService,
+} from '@/services/userService'
 
-export const getUsers = async (req, res) => {
+export const getUsers = async (req: Request, res: Response) => {
   try {
     const users = await getUsersService()
     res.json(users)
   } catch (error) {
-    res.status(500).json({ error: error.message })
+    res.status(500).json({ error: (error as Error).message })
   }
 }
 
-export const login = async (req, res) => {
+export const login = async (req: Request, res: Response) => {
   try {
     const result = await loginService(req.body)
     res.json(result)
   } catch (error) {
-    res.status(500).json({ error: error.message })
+    res.status(500).json({ error: (error as Error).message })
   }
 }
 
-export const register = async (req, res) => {
+export const register = async (req: Request, res: Response) => {
   try {
     const result = await registerService(req.body)
     res.json(result)
   } catch (error) {
-    res.status(500).json({ success: false, messsage: error.message })
+    res.status(500).json({ success: false, messsage: (error as Error).message })
   }
 }
-export const editProfile = async (req, res) => {
+export const editProfile = async (req: Request, res: Response) => {
   try {
     const result = await editProfileService(req.body)
     res.json(result)
   } catch (error) {
-    res.status(500).json({ success: false, messsage: error.message })
+    res.status(500).json({ success: false, messsage: (error as Error).message })
   }
 }
-

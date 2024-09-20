@@ -2,6 +2,12 @@ import { sql } from '../config/database.js'
 import bcryptjs from 'bcryptjs'
 import jwt from 'jsonwebtoken'
 import { config } from 'dotenv'
+// types / interfaces
+import {
+  EditProfileParams,
+  LoginParams,
+  RegisterParams,
+} from '../types/serviceTypes.js'
 
 config()
 
@@ -10,13 +16,7 @@ export const getUsersService = async () => {
   return result
 }
 
-export const loginService = async ({
-  email,
-  password,
-}: {
-  email: string
-  password: string
-}) => {
+export const loginService = async ({ email, password }: LoginParams) => {
   const result = await sql`SELECT * FROM users WHERE email = ${email}`
 
   if (!result[0]) {
@@ -46,15 +46,7 @@ export const registerService = async ({
   phone,
   profilephoto,
   bio,
-}: {
-  username: string
-  fullname: string
-  email: string
-  password: string
-  phone: string
-  profilephoto: string
-  bio: string
-}) => {
+}: RegisterParams) => {
   const emailFlag = await sql`SELECT * FROM users WHERE email = ${email}`
 
   if (emailFlag.length > 0)
@@ -90,16 +82,7 @@ export const editProfileService = async ({
   phone,
   profilephoto,
   bio,
-}: {
-  userid: number
-  username: string
-  fullname: string
-  email: string
-  password: string
-  phone: string
-  profilephoto: string
-  bio: string
-}) => {
+}: EditProfileParams) => {
   try {
     const hashedPassword = await bcryptjs.hash(password, 10)
     const result = await sql`UPDATE users

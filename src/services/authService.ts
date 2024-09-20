@@ -1,15 +1,12 @@
 import jwt from 'jsonwebtoken'
 import { config } from 'dotenv'
 import { sql } from '../config/database.js'
+// types / interfaces
+import { TokenPayload, VerifyTokenParams } from '../types/serviceTypes.js'
 
 config()
 
-interface TokenPayload {
-  userid: string
-  exp: number
-}
-
-export const verifyTokenService = async ({ token }: { token: string }) => {
+export const verifyTokenService = async ({ token }: VerifyTokenParams) => {
   try {
     const decoded = jwt.verify(
       token,

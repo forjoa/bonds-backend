@@ -1,16 +1,7 @@
-import { Server, Socket } from 'socket.io'
-import { DefaultEventsMap } from 'socket.io/dist/typed-events'
-
-interface User {
-  userid: number
-}
-
-interface CustomSocket extends Socket {
-  userid: number
-}
+import { CustomSocket, Io } from '../types/socketTypes.js'
 
 export default function handleFriendRequestEvents(
-  io: Server<DefaultEventsMap, DefaultEventsMap, DefaultEventsMap, User>,
+  io: Io,
   socket: CustomSocket
 ) {
   socket.on('friendRequest', ({ senderId, receiverId }) => {

@@ -1,16 +1,18 @@
 import { sql } from '../config/database.js'
+// types / interfaces
+import {
+  GetNotificationParams,
+  MarkAsReadAllParams,
+  MarkAsReadParams,
+  NewNotificationParams,
+} from '../types/serviceTypes.js'
 
 export const newNotificationService = async ({
   userid,
   type,
   referenceid,
   seen = false,
-}: {
-  userid: number
-  type: string
-  referenceid: number
-  seen?: boolean
-}) => {
+}: NewNotificationParams) => {
   await sql`INSERT INTO notifications (
                                     userid, 
                                     type, 
@@ -25,7 +27,9 @@ export const newNotificationService = async ({
                         )`
 }
 
-export const getNotificationsService = async ({ id }: { id: number }) => {
+export const getNotificationsService = async ({
+  id,
+}: GetNotificationParams) => {
   const notifications = await sql`
     SELECT n.type, n.referenceid, u.username, u.profilephoto, n.seen, n.notificationid,
            CASE 
@@ -49,7 +53,7 @@ export const getNotificationsService = async ({ id }: { id: number }) => {
   return notifications
 }
 
-export const markAsReadService = async ({ id }: { id: number }) => {
+export const markAsReadService = async ({ id }: MarkAsReadParams) => {
   try {
     const result =
       await sql`update notifications set seen = true where notificationid = ${id}`
@@ -59,7 +63,7 @@ export const markAsReadService = async ({ id }: { id: number }) => {
   }
 }
 
-export const markAsReadAllService = async ({ id }: { id: number }) => {
+export const markAsReadAllService = async ({ id }: MarkAsReadAllParams) => {
   try {
     const result =
       await sql`update notifications set seen = true where userid = ${id}`

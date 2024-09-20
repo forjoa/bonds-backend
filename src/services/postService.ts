@@ -1,14 +1,19 @@
 import { sql } from '../config/database.js'
+// types / interfaces
+import {
+  CommentParams,
+  GetHomeParams,
+  GetMyPostsParams,
+  GetPostInfoParams,
+  LikeParams,
+  UploadPostParams,
+} from '../types/serviceTypes.js'
 
 export const uploadPostService = async ({
   userid,
   content,
   files,
-}: {
-  userid: number
-  content: string
-  files: string[]
-}) => {
+}: UploadPostParams) => {
   try {
     const [newPost] = await sql`
         INSERT INTO posts (userid, content)
@@ -38,11 +43,7 @@ export const getHomeService = async ({
   userid,
   page,
   limit,
-}: {
-  userid: number
-  page: number
-  limit: number
-}) => {
+}: GetHomeParams) => {
   const offset = (page - 1) * limit
 
   const result = await sql`
@@ -100,13 +101,7 @@ export const getHomeService = async ({
   return result
 }
 
-export const likeService = async ({
-  postid,
-  userid,
-}: {
-  postid: number
-  userid: number
-}) => {
+export const likeService = async ({ postid, userid }: LikeParams) => {
   const [{ count }] =
     await sql`SELECT COUNT(*)::int FROM likes WHERE postid = ${postid} AND userid = ${userid}`
 
@@ -131,11 +126,7 @@ export const commentService = async ({
   userid,
   postid,
   content,
-}: {
-  userid: number
-  postid: number
-  content: string
-}) => {
+}: CommentParams) => {
   const [insertResult] = await sql`
       INSERT INTO comments (postid, userid, content) 
       VALUES (${postid}, ${userid}, ${content}) 
@@ -158,11 +149,7 @@ export const getMyPostsService = async ({
   userid,
   page,
   limit,
-}: {
-  userid: number
-  page: number
-  limit: number
-}) => {
+}: GetMyPostsParams) => {
   const offset = (page - 1) * limit
 
   const result = await sql`
@@ -217,10 +204,7 @@ export const getMyPostsService = async ({
 export const getPostInfoService = async ({
   userid,
   postid,
-}: {
-  userid: number
-  postid: number
-}) => {
+}: GetPostInfoParams) => {
   const result = await sql`
     SELECT
         posts.postid,

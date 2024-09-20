@@ -1,18 +1,6 @@
-import { Server, Socket } from 'socket.io'
-import { DefaultEventsMap } from 'socket.io/dist/typed-events'
+import { CustomSocket, Io } from '../types/socketTypes.js'
 
-interface User {
-  userid: number
-}
-
-interface CustomSocket extends Socket {
-  userid: number
-}
-
-export default function handleLikeEvents(
-  io: Server<DefaultEventsMap, DefaultEventsMap, DefaultEventsMap, User>,
-  socket: CustomSocket
-) {
+export default function handleLikeEvents(io: Io, socket: CustomSocket) {
   socket.on('like', ({ postId, userId, targetUserId }) => {
     if (!postId || !userId || !targetUserId) {
       socket.emit('error', { message: 'Invalid data for like event' })

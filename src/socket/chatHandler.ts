@@ -1,18 +1,6 @@
-import { Server, Socket } from 'socket.io'
-import { DefaultEventsMap } from 'socket.io/dist/typed-events'
+import { CustomSocket, Io } from '../types/socketTypes.js'
 
-interface User {
-  userid: number
-}
-
-interface CustomSocket extends Socket {
-  userid: number
-}
-
-export default function handleChatEvents(
-  io: Server<DefaultEventsMap, DefaultEventsMap, DefaultEventsMap, User>,
-  socket: CustomSocket
-) {
+export default function handleChatEvents(io: Io, socket: CustomSocket) {
   socket.on('joinRoom', (room) => {
     socket.join(room)
     console.log(`User joined room ${room}`)

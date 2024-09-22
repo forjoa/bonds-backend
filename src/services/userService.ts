@@ -99,3 +99,8 @@ export const editProfileService = async ({
     throw new Error('Failed to update profile')
   }
 }
+
+export const getUserService = async ({ userid }: { userid: number }) => {
+  const [result] = await sql`SELECT * FROM users WHERE userid = ${userid}`
+  return result
+}

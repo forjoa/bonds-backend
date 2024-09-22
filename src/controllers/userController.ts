@@ -4,7 +4,10 @@ import {
   loginService,
   registerService,
   editProfileService,
+  getUserService,
 } from '../services/userService.js'
+
+import { myProfileService } from '../services/postService.js'
 
 export const getUsers = async (req: Request, res: Response) => {
   try {
@@ -36,6 +39,17 @@ export const editProfile = async (req: Request, res: Response) => {
   try {
     const result = await editProfileService(req.body)
     res.json(result)
+  } catch (error) {
+    res.status(500).json({ success: false, messsage: (error as Error).message })
+  }
+}
+
+export const userProfile = async (req: Request, res: Response) => {
+  try {
+    const resultGetUser = await getUserService(req.body)
+    const resultProfilePosts = await myProfileService(req.body)
+    
+    res.json({user: resultGetUser, posts: resultProfilePosts})
   } catch (error) {
     res.status(500).json({ success: false, messsage: (error as Error).message })
   }

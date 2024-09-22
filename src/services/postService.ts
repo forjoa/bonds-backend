@@ -158,7 +158,6 @@ export const myProfileService = async ({
             posts.content,
             posts.createdat,
             users.username,
-            users.userid,
             users.fullname,
             users.profilephoto,
             COALESCE(

@@ -3,7 +3,7 @@ import { sql } from '../config/database.js'
 import {
   CommentParams,
   GetHomeParams,
-  GetMyPostsParams,
+  MyProfileParams,
   GetPostInfoParams,
   LikeParams,
   UploadPostParams,
@@ -145,11 +145,11 @@ export const commentService = async ({
       }
 }
 
-export const getMyPostsService = async ({
+export const myProfileService = async ({
   userid,
   page,
   limit,
-}: GetMyPostsParams) => {
+}: MyProfileParams) => {
   const offset = (page - 1) * limit
 
   const result = await sql`

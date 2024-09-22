@@ -55,7 +55,7 @@ export interface CommentParams {
   content: string
 }
 
-export interface GetMyPostsParams {
+export interface MyProfileParams {
   userid: number
   page: number
   limit: number

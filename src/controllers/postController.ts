@@ -2,7 +2,7 @@ import { Request, Response } from 'express'
 import {
   commentService,
   getHomeService,
-  getMyPostsService,
+  myProfileService,
   likeService,
   uploadPostService,
   getPostInfoService,
@@ -46,7 +46,7 @@ export const comment = async (req: Request, res: Response) => {
 
 export const myProfile = async (req: Request, res: Response) => {
   try {
-    const result = await getMyPostsService(req.body)
+    const result = await myProfileService(req.body)
     res.json(result)
   } catch (error) {
     res.status(500).json({ error: (error as Error).message })

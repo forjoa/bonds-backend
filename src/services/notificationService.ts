@@ -48,6 +48,7 @@ export const getNotificationsService = async ({
     LEFT JOIN comments c ON n.type = 'comment' AND c.commentid = n.referenceid
     -- Agrega más LEFT JOINs según sea necesario para otros tipos
     WHERE n.userid = ${id} AND u.userid != ${id}
+    ORDER BY n.createdat DESC
   `
 
   return notifications

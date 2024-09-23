@@ -23,6 +23,7 @@ export const getNotifications = async (req: Request, res: Response) => {
     res.status(500).json({ success: false, messsage: (error as Error).message })
   }
 }
+
 export const markAsRead = async (req: Request, res: Response) => {
   try {
     const result = await markAsReadService(req.body)
